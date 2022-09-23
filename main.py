@@ -1,12 +1,12 @@
 # Monitorar mudanças de arquivos e pegar o PID do processo que o modificou
 
-from ast import While
-import watchdog.events
-import watchdog.observers
+import os
 import time
 import psutil
 
-# import os
+import watchdog.events
+import watchdog.observers
+
 import win32evtlog
 import xml.etree.ElementTree as ET
 
@@ -26,121 +26,109 @@ class Handler(watchdog.events.PatternMatchingEventHandler):
         watchdog.events.PatternMatchingEventHandler.__init__(self, patterns=['*'],
                                                              ignore_directories=False, case_sensitive=False)
 
-    def on_created(self, event):
-        print("Watchdog received created event - % s." % event.src_path)
-        # Event is created, you can process it now
+    # def on_created(self, event):
+    #     print("Watchdog received created event - % s." % event.src_path)
+    #     # Event is created, you can process it now
   
     def on_modified(self, event):
+        if event.src_path != r'C:\\Users\user\Desktop\FIAP\LAB_501\FinalCry\planilha.csv':
+            return
+            
         print("Watchdog received modified event - % s." % event.src_path)
-        # open event file
+        pid = os.getpid()
+
+        # time.sleep(1)
         query_handle = win32evtlog.EvtQuery(
             'C:\Windows\System32\winevt\Logs\Security.evtx',
             win32evtlog.EvtQueryFilePath | win32evtlog.EvtQueryReverseDirection)
-        
-        detecting = False
 
-        while detecting == False:
+        read_count = 0
+        
+        detecting = True
+
+        while read_count <= 500 and detecting:
             events = win32evtlog.EvtNext(query_handle, 100)
             
-            # read_count += len(events)
+            read_count += len(events)
             if len(events) == 0: 
                 print('No more events')
-                return
             
             for index, event in enumerate(events):
-                if index >= 100:
-                    detecting = False
-                    break
-                if detecting == True:
-                    xml_content = win32evtlog.EvtRender(event, win32evtlog.EvtRenderEventXml)
-                    # SubjectUserSid S-1-5-21-134867458-105844377-4090580669-1001
-                    # SubjectUserName user
-                    # SubjectDomainName DESKTOP-C7MCF3M
-                    # SubjectLogonId 0x29ce6
-                    # ObjectServer Security
-                    # ObjectType File
-                    # ObjectName C:\Users\user\Desktop\FIAP\LAB_501\FinalCry\a.py
-                    # HandleId 0x2f0
-                    # AccessList %%4423
+                xml_content = win32evtlog.EvtRender(event, win32evtlog.EvtRenderEventXml)
+                # SubjectUserSid S-1-5-21-134867458-105844377-4090580669-1001
+                # SubjectUserName user
+                # SubjectDomainName DESKTOP-C7MCF3M
+                # SubjectLogonId 0x29ce6
+                # ObjectServer Security
+                # ObjectType File
+                # ObjectName C:\Users\user\Desktop\FIAP\LAB_501\FinalCry\a.py
+                # HandleId 0x2f0
+                # AccessList %%4423
+                # AccessMask 0x80
+                # ProcessId 0x4738
+                # 18232
+                # ProcessName C:\Python39\python.exe
+                # ResourceAttributes S:AI
 
-                    # AccessMask 0x80
-                    # ProcessId 0x4738
-                    # 18232
-                    # ProcessName C:\Python39\python.exe
-                    # ResourceAttributes S:AI
+                # parse xml content
+                xml = ET.fromstring(xml_content)
 
-                    # if teste > 1: break
-                    # teste += 1
+                ns_map = { 'e': 'http://schemas.microsoft.com/win/2004/08/events/event' }
 
-                    # parse xml content
-                    xml = ET.fromstring(xml_content)
+                process_id_converted = None
+                is_a_File_ObjectType = False
+                is_a_GhostFile = False
+                is_a_ransomware = False
 
-                    ns_map = { 'e': 'http://schemas.microsoft.com/win/2004/08/events/event' }
+                for data in xml.iterfind('.//e:EventData/e:Data', ns_map):
+                    # if is_a_File_ObjectType == True:
+                    #   print(data.attrib['Name'], data.text)
+                    #   quit()
 
-                    process_id_converted = None
-                    is_a_File_ObjectType = False
-                    is_a_GhostFile = False
-                    is_a_ransomware = False
+                    if data.attrib['Name'] == 'ObjectType' and data.text == 'File':
+                        is_a_File_ObjectType = True
+                    
+                    # É um tipo de alteração de arquivo
+                    if is_a_File_ObjectType == True:
+                        if data.attrib['Name'] == 'ObjectName' and data.text == r"C:\Users\user\Desktop\FIAP\LAB_501\FinalCry\planilha.csv":
+                            is_a_GhostFile = True
 
-                    for data in xml.iterfind('.//e:EventData/e:Data', ns_map):
-                        # if is_a_File_ObjectType == True:
-                        #   print(data.attrib['Name'], data.text)
-                        #   quit()
+                        # É um arquivo ghost
+                        if is_a_GhostFile == True:
+                            if data.attrib['Name'] == 'ProcessId':
+                                process_id_converted = int(data.text, 16)
+                                # print(process_id_converted)
 
-                        if data.attrib['Name'] == 'ObjectType' and data.text == 'File':
-                            is_a_File_ObjectType = True
+                            if data.attrib['Name'] == 'ProcessName' and 'Explorer' not in data.text and 'Microsoft VS Code' not in data.text:
+                            # if data.attrib['Name'] == 'ProcessName' and data.text == 'C:\Python39\python.exe' and process_id_converted == 13892:
+                                print("Process found - ", process_id_converted, data.text)
+                                is_a_ransomware = True
 
-                        if data.attrib['Name'] == 'ObjectType' and data.text != 'File':
-                            is_a_File_ObjectType = False
-                            continue
-                        
-                        # É um tipo de alteração de arquivo
-                        if is_a_File_ObjectType == True:
-                            if data.attrib['Name'] == 'ObjectName' and data.text == r"C:\Users\user\Desktop\FIAP\LAB_501\FinalCry\planilha.csv":
-                                is_a_GhostFile = True
-
-                            if data.attrib['Name'] == 'ObjectName' and data.text != r"C:\Users\user\Desktop\FIAP\LAB_501\FinalCry\planilha.csv":
-                                is_a_GhostFile = False
-                                continue
-
-                            # É um arquivo ghost
-                            if is_a_GhostFile == True:
-                                if data.attrib['Name'] == 'ProcessId':
-                                    process_id_converted = int(data.text, 16)
-                                    # print(process_id_converted)
-
-                                if data.attrib['Name'] == 'ProcessName' and 'Explorer' not in data.text and 'Microsoft VS Code' not in data.text:
-                                # if data.attrib['Name'] == 'ProcessName' and data.text == 'C:\Python39\python.exe' and process_id_converted == 13892:
-                                    print("Process found - ", process_id_converted, data.text)
-                                    is_a_ransomware = True
-
-                                # É um ransomware
-                                if is_a_ransomware == True:
-                                    for proc in psutil.process_iter():
-                                        if proc.pid == process_id_converted:
-                                            print('Ransomware found - ', process_id_converted, data.text)
-                                            print("Process Kill - ", process_id_converted)
-                                            proc.kill()
-                                            detecting = True
-                                            break
-                
+                            # É um ransomware
+                            if is_a_ransomware == True and process_id_converted != pid:
+                                for proc in psutil.process_iter():
+                                    if proc.pid == process_id_converted:
+                                        print('Ransomware found - ', process_id_converted, data.text)
+                                        print("Process Kill - ", process_id_converted)
+                                        os.kill(process_id_converted, 9)
+                                        detecting = False
 
 
-    def on_closed(self, event):
-        print("Watchdog received closed event - % s." % event.src_path)
-        # Event is modified, you can process it now
+    # def on_closed(self, event):
+    #     print("Watchdog received closed event - % s." % event.src_path)
+    #     # Event is modified, you can process it now
 
-    def on_deleted(self, event):
-        print("Watchdog received deleted event - % s." % event.src_path)
-        # Event is modified, you can process it now
+    # def on_deleted(self, event):
+    #     print("Watchdog received deleted event - % s." % event.src_path)
+    #     # Event is modified, you can process it now
 
-    def on_moved(self, event):
-        print("Watchdog received moved event - % s." % event.src_path)
-        # Event is modified, you can process it now
+    # def on_moved(self, event):
+    #     print("Watchdog received moved event - % s." % event.src_path)
+    #     # Event is modified, you can process it now
   
   
 if __name__ == "__main__":
-    src_path = r"C:\Users\user\Desktop\FIAP\LAB_501\FinalCry"
+    src_path = r"C:\\"
     event_handler = Handler()
     observer = watchdog.observers.Observer()
     observer.schedule(event_handler, path=src_path, recursive=True)
