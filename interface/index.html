@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
+    />
+
+    <link href="./src/styles/main.css" rel="stylesheet" />
+
+    <title>Spectre</title>
+  </head>
+  <body>
+    <button class="to-activate" id="open-executable">Ativar Spectre</button>
+
+    <input type="file" id="pick-folder" webkitdirectory directory />
+
+    <script src="./src/renderer.js"></script>
+  </body>
+</html>

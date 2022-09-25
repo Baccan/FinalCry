@@ -19,7 +19,7 @@ from winotify import Notification, audio
 
 # get pid from C:\Users\user\Desktop\FIAP\LAB_501\Testes\pid.txt
 def get_pid_of_spectre():
-    with open(r'C:\Users\user\Desktop\FIAP\LAB_501\Testes\pid.txt', 'r') as f:
+    with open(r'"C:\Program Files (x86)\Final Cry\pid.txt"', 'r') as f:
         pid = f.read()
         return pid
 
@@ -37,7 +37,7 @@ def notify_ransomware():
 
 # Reading the json file and getting the folders and files that are going to be
 # monitored.
-json_file = open('C:\\Users\\user\\Desktop\\FIAP\\LAB_501\\Testes\\securityFolders.json')
+json_file = open(r'C:\Program Files (x86)\Final Cry\securityFolders.json')
 json_str = json_file.read()
 json_data = json.loads(json_str)
 
@@ -190,7 +190,7 @@ def write_log(event):
             time_now = get_time()
             event_type = get_event(event)
             if pid_and_user != None:
-                with open('C:\\Users\\user\\Desktop\\FIAP\\LAB_501\\Testes\\log.csv', 'a+') as file_object:
+                with open(r'C:\Program Files (x86)\Final Cry\log.csv', 'a+') as file_object:
                     file_object.seek(0)
                     data = file_object.read(100)
                     if len(data) > 0 :
