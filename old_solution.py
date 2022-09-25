@@ -3,6 +3,7 @@
 import os
 import time
 import psutil
+import json
 
 import watchdog.events
 import watchdog.observers
@@ -20,6 +21,19 @@ import xml.etree.ElementTree as ET
 #         if proc.name() == process_name:
 #             return proc.pid
 
+# Reading the json file and getting the folders and files that are going to be
+# monitored.
+json_file = open('C:\\Users\\user\\Desktop\\FIAP\\LAB_501\\Testes\\securityFolders.json')
+json_str = json_file.read()
+json_data = json.loads(json_str)
+
+ghostFiles = []
+for folder in json_data:
+    ghostFiles.append(folder['folderPath'] + '\\' + folder['fullFileName'])
+
+# print(ghostFiles)
+# exit()
+
 class Handler(watchdog.events.PatternMatchingEventHandler):
     def __init__(self):
         # Set the patterns for PatternMatchingEventHandler
@@ -31,7 +45,9 @@ class Handler(watchdog.events.PatternMatchingEventHandler):
     #     # Event is created, you can process it now
   
     def on_modified(self, event):
-        if event.src_path != r'C:\\Users\user\Desktop\FIAP\LAB_501\FinalCry\planilha.csv':
+        # if event.src_path != r'C:\\Users\user\Desktop\FIAP\LAB_501\FinalCry\planilha.csv':
+        # if event.src_path != r'C:\\Users\user\Desktop\FIAP\LAB_501\Testes\SecurityFolder_2\tysaedyqu.html':
+        if event.src_path not in ghostFiles:
             return
             
         print("Watchdog received modified event - % s." % event.src_path)
@@ -88,10 +104,18 @@ class Handler(watchdog.events.PatternMatchingEventHandler):
                     if data.attrib['Name'] == 'ObjectType' and data.text == 'File':
                         is_a_File_ObjectType = True
                     
+                    # ghostFiles = [r"C:\Users\user\Desktop\FIAP\LAB_501\FinalCry\planilha.csv", r"C:\Users\user\Desktop\FIAP\LAB_501\reserva\a.txt"]
+
                     # É um tipo de alteração de arquivo
                     if is_a_File_ObjectType == True:
-                        if data.attrib['Name'] == 'ObjectName' and data.text == r"C:\Users\user\Desktop\FIAP\LAB_501\FinalCry\planilha.csv":
+                        # if data.attrib['Name'] == 'ObjectName' and data.text == r"C:\Users\user\Desktop\FIAP\LAB_501\FinalCry\planilha.csv":
+                        if data.attrib['Name'] == 'ObjectName' and data.text == r"C:\Users\user\Desktop\FIAP\LAB_501\Testes\SecurityFolder_2\tysaedyqu.html":
                             is_a_GhostFile = True
+                            print(data.attrib['Name'], data.text)
+
+                        # if data.attrib['Name'] == 'ObjectName' and data.text in ghostFiles:
+                        #     is_a_GhostFile = True
+                        #     print(data.attrib['Name'], data.text)
 
                         # É um arquivo ghost
                         if is_a_GhostFile == True:
@@ -110,8 +134,12 @@ class Handler(watchdog.events.PatternMatchingEventHandler):
                                     if proc.pid == process_id_converted:
                                         print('Ransomware found - ', process_id_converted, data.text)
                                         print("Process Kill - ", process_id_converted)
+                                        # get process info by PID
+                                        p = psutil.Process(process_id_converted)
+                                        print(p)
                                         os.kill(process_id_converted, 9)
                                         detecting = False
+                                        quit()
 
 
     # def on_closed(self, event):
