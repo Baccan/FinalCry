@@ -1,0 +1,42 @@
+{
+  "name": "spectre",
+  "version": "1.0.0",
+  "description": "A ransomware stopper for Windows",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ./src/main.js"
+  },
+  "repository": "https://github.com/Baccan/spectre",
+  "keywords": [
+    "Spectre",
+    "ransomware",
+    "windows",
+    "beta"
+  ],
+  "author": "LAB 501",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^20.2.0"
+  },
+  "dependencies": {},
+  "build": {
+    "productName": "Spectre",
+    "appId": "org.develar.spectre",
+    "files": [
+      "app/dist/",
+      "app/app.html",
+      "app/main.prod.js",
+      "app/main.prod.js.map",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "guid": "59b1282c-b6dd-4833-9f4f-ba756a632b04",
+      "oneClick": true,
+      "perMachine": true
+    }
+  }
+}

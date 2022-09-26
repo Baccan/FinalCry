@@ -12,12 +12,6 @@ import win32api
 
 from winotify import Notification, audio
 
-pid = os.getpid()
-
-# Write the pid to a file C:\Program Files (x86)\Spectre\FinalCry\pid.txt
-with open(r'C:\Program Files (x86)\Spectre\FinalCry\pid.txt', 'w') as f:
-    f.write(str(pid))
-
 # import win32api
 
 # win32api.MessageBox(0, 'hello', 'title')
@@ -34,7 +28,7 @@ def notify_ransomware():
                      title="Um ransomware foi detectado",
                      msg="Não desligue o computador e entre em contato com o suporte técnico",
                      duration='long',
-                     icon=r"C:\Program Files (x86)\Spectre\Spectre.ico")
+                     icon=r"C:\Users\user\Desktop\FIAP\LAB_501\Challenge\Spectre\Spectre.ico")
 
     toast.set_audio(audio.Mail, loop=False)
     toast.show()
@@ -53,6 +47,8 @@ for folder in json_data:
 
 # Getting the user that is modifying the file
 def get_user():
+    pid = os.getpid()
+
     query_handle = win32evtlog.EvtQuery(
         'C:\Windows\System32\winevt\Logs\Security.evtx',
         win32evtlog.EvtQueryFilePath | win32evtlog.EvtQueryReverseDirection)
