@@ -1,1 +1,10 @@
-[{"backupFolder":"C:\\Users\\user\\Desktop\\FIAP\\LAB_501\\Testes\\BKPs\\SecurityFolder_1-2022-09-25 23-26-34","folderPath":"C:\\Users\\user\\Desktop\\FIAP\\LAB_501\\Testes\\SecurityFolder_1","file":"dunasaecu","extension":"mp3","fullFileName":"dunasaecu.mp3","security_folders_json_path":"C:\\Program Files (x86)\\Spectre\\securityFolders.json"},{"backupFolder":"C:\\Users\\user\\Desktop\\FIAP\\LAB_501\\Testes\\BKPs\\SecurityFolder_2-2022-09-25 23-26-34","folderPath":"C:\\Users\\user\\Desktop\\FIAP\\LAB_501\\Testes\\SecurityFolder_2","file":"jydotipaeru","extension":"zip","fullFileName":"jydotipaeru.zip","security_folders_json_path":"C:\\Program Files (x86)\\Spectre\\securityFolders.json"}]
+[
+  {
+    "backupFolder": "",
+    "folderPath": "",
+    "file": "",
+    "extension": "",
+    "fullFileName": "",
+    "security_folders_json_path": ""
+  }
+]
