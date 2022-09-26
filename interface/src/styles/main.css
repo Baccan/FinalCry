@@ -1,0 +1,108 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --main-color: #5e17eb;
+  --default-text: #16213E;
+
+  --default-success: #51E1A6;
+  --default-error: #e94560;
+
+  --main-font: 'Barlow', sans-serif;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  color: var(--default-text);
+  font-family: var(--main-font);
+}
+
+header {
+  width: 100%;
+  min-height: 150px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 25px;
+
+  background: #5e17eb;
+  background: linear-gradient(0deg, rgba(80, 20, 199, 0.3) 0%, rgba(22, 33, 62, 0) 100%);
+}
+
+header .logo {
+  width: 150px;
+  margin-right: 1.5rem;
+}
+
+header h2 {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.default-btn {
+  margin-top: 1rem;
+  cursor: pointer;
+
+  border: 0;
+  background: var(--main-color);
+  color: #fff;
+  border-radius: 5px;
+  padding: 8px 15px;
+  font-weight: 500;
+  letter-spacing: 0.25px;
+  transition: .2s ease-in-out;
+
+  font-size: 0.8rem;
+}
+
+.default-btn:hover {
+  background: #3d0d9a;
+}
+
+main {
+  padding: 25px;
+}
+
+.backup-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.backup-input h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.backup-input p {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+.backup-input label {
+  position: relative;
+}
+
+.backup-input input {
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
