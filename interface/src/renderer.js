@@ -73,6 +73,9 @@ document.querySelector('#open-executable').addEventListener('click', (ev) => {
 
     localStorage.setItem('spectre-active', 'false');
 
+    document.querySelector('.header-content h2').innerHTML =
+      'Sua proteção está desativada';
+
     ev.target.className = [
       ...removeBlacklistClassnames(currentClassName),
       'to-deactivate',
@@ -91,6 +94,9 @@ document.querySelector('#open-executable').addEventListener('click', (ev) => {
     'to-activate',
   ].join(' ');
   ev.target.innerHTML = 'Desativar Spectre';
+
+  document.querySelector('.header-content h2').innerHTML =
+    'Sua proteção está ativa agora';
 
   return handleSpectreFunction('unins001.exe');
   // return handleSpectreFunction('deactivate.py')
