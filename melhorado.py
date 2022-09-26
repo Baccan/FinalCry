@@ -28,7 +28,7 @@ def notify_ransomware():
                      title="Um ransomware foi detectado",
                      msg="Não desligue o computador e entre em contato com o suporte técnico",
                      duration='long',
-                     icon=r"C:\Users\user\Desktop\FIAP\LAB_501\Challenge\Spectre\Spectre.ico")
+                     icon=r"C:\Program Files (x86)\Spectre\Spectre.ico")
 
     toast.set_audio(audio.Mail, loop=False)
     toast.show()
