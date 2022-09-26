@@ -29,6 +29,19 @@ def get_pid_of_spectre():
         pid = f.read()
         return pid
 
+def notify_program_start():
+    toast = Notification(app_id="Final Cry",
+                     title="Final Cry",
+                     msg="A aplicação foi iniciada com sucesso!",
+                     duration='long',
+                     icon=r"C:\Program Files (x86)\Spectre\Spectre.ico")
+
+    toast.set_audio(audio.Mail, loop=False)
+    toast.show()
+
+    win32api.MessageBox(0, 'A aplicação foi iniciada com sucesso!', 'Final Cry', 0x00001000)
+
+
 def notify_ransomware():
     toast = Notification(app_id="Final Cry",
                      title="Um ransomware foi detectado",
@@ -43,7 +56,7 @@ def notify_ransomware():
 
 # Reading the json file and getting the folders and files that are going to be
 # monitored.
-json_file = open(r'C:\Program Files (x86)\Final Cry\securityFolders.json')
+json_file = open(r'C:\Program Files (x86)\Spectre\securityFolders.json')
 json_str = json_file.read()
 json_data = json.loads(json_str)
 
@@ -229,6 +242,8 @@ if __name__ == '__main__':
     observer = watchdog.observers.Observer()
     observer.schedule(event_handler, path, recursive=True)
     observer.start()
+
+    notify_program_start()
 
     try:
         while True:
