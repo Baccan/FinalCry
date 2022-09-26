@@ -12,6 +12,12 @@ import win32api
 
 from winotify import Notification, audio
 
+pid = os.getpid()
+
+# Write the pid to a file C:\Program Files (x86)\Spectre\FinalCry\pid.txt
+with open(r'C:\Program Files (x86)\Spectre\FinalCry\pid.txt', 'w') as f:
+    f.write(str(pid))
+
 # import win32api
 
 # win32api.MessageBox(0, 'hello', 'title')
@@ -47,8 +53,6 @@ for folder in json_data:
 
 # Getting the user that is modifying the file
 def get_user():
-    pid = os.getpid()
-
     query_handle = win32evtlog.EvtQuery(
         'C:\Windows\System32\winevt\Logs\Security.evtx',
         win32evtlog.EvtQueryFilePath | win32evtlog.EvtQueryReverseDirection)
