@@ -25,7 +25,7 @@ with open(r'C:\Program Files (x86)\Spectre\FinalCry\pid.txt', 'w') as f:
 
 # get pid from C:\Users\user\Desktop\FIAP\LAB_501\Testes\pid.txt
 def get_pid_of_spectre():
-    with open(r'"C:\Program Files (x86)\Final Cry\pid.txt"', 'r') as f:
+    with open(r'C:\Program Files (x86)\Spectre\pid.txt', 'r') as f:
         pid = f.read()
         return pid
 
@@ -53,6 +53,18 @@ def notify_ransomware():
     toast.show()
 
     win32api.MessageBox(0, 'Um ransomware foi detectado.\nNão desligue seu dispositivo!\nPor favor entre em contato com o suporte para mais informações.', 'Final Cry', 0x00001000)
+
+def notify_program_error():
+    toast = Notification(app_id="Final Cry",
+                     title="Final Cry",
+                     msg="Ocorreu um erro com a aplicação",
+                     duration='long',
+                     icon=r"C:\Program Files (x86)\Spectre\Spectre.ico")
+
+    toast.set_audio(audio.Mail, loop=False)
+    toast.show()
+
+    win32api.MessageBox(0, 'Ocorreu um erro com a aplicação', 'Final Cry', 0x00001000)
 
 # Reading the json file and getting the folders and files that are going to be
 # monitored.
@@ -207,13 +219,14 @@ def write_log(event):
             time_now = get_time()
             event_type = get_event(event)
             if pid_and_user != None:
-                with open(r'C:\Program Files (x86)\Final Cry\log.csv', 'a+') as file_object:
+                with open(r'C:\Program Files (x86)\Spectre\log.csv', 'a+') as file_object:
                     file_object.seek(0)
                     data = file_object.read(100)
                     if len(data) > 0 :
                         file_object.write("\n")
                     file_object.write(f'{file};{pid_and_user[0]};{pid_and_user[1]};{time_now};{event_type}')
         except:
+            notify_program_error()
             print("Error getting process info")
 
 # Creating the event handler
