@@ -12,6 +12,18 @@ import win32api
 
 from winotify import Notification, audio
 
+# os.system("auditpol.exe /get /category:*")
+# # create audit policy
+# def create_audit_policy():
+#     os.system("auditpol.exe /set /subcategory:File System /success:enable /failure:enable")
+#     # os.system("auditpol.exe /set /subcategory:Process Creation /success:enable /failure:enable")
+#     # os.system("auditpol.exe /set /subcategory:Process Termination /success:enable /failure:enable")
+#     # os.system("auditpol.exe /set /subcategory:Process Tracking /success:enable /failure:enable")
+#     # os.system("auditpol.exe /set /subcategory:Process Handle Operation /success:enable /failure:enable")
+
+# create_audit_policy()
+# exit()
+
 pid = os.getpid()
 
 # Write the pid to a file C:\Program Files (x86)\Spectre\FinalCry\pid.txt
@@ -39,7 +51,7 @@ def notify_program_start():
     toast.set_audio(audio.Mail, loop=False)
     toast.show()
 
-    win32api.MessageBox(0, 'A aplicação foi iniciada com sucesso!', 'Final Cry', 0x00001000)
+    # win32api.MessageBox(0, 'A aplicação foi iniciada com sucesso!', 'Final Cry', 0x00001000)
 
 
 def notify_ransomware():
@@ -52,7 +64,7 @@ def notify_ransomware():
     toast.set_audio(audio.Mail, loop=False)
     toast.show()
 
-    win32api.MessageBox(0, 'Um ransomware foi detectado.\nNão desligue seu dispositivo!\nPor favor entre em contato com o suporte para mais informações.', 'Final Cry', 0x00001000)
+    # win32api.MessageBox(0, 'Um ransomware foi detectado.\nNão desligue seu dispositivo!\nPor favor entre em contato com o suporte para mais informações.', 'Final Cry', 0x00001000)
 
 def notify_program_error():
     toast = Notification(app_id="Final Cry",
@@ -64,7 +76,7 @@ def notify_program_error():
     toast.set_audio(audio.Mail, loop=False)
     toast.show()
 
-    win32api.MessageBox(0, 'Ocorreu um erro com a aplicação', 'Final Cry', 0x00001000)
+    # win32api.MessageBox(0, 'Ocorreu um erro com a aplicação', 'Final Cry', 0x00001000)
 
 # Reading the json file and getting the folders and files that are going to be
 # monitored.
